@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <link rel="manifest" href="manifest.json">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>الشيخ د. محمد الأمين إسماعيل</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    body { font-family: 'Tajawal', sans-serif; background-color: #0f3d3b; }
+    .font-cairo { font-family: 'Cairo', sans-serif; }
+    .card-bg { background: linear-gradient(145deg, #237571, #18524f); }
+    .card-dark { background-color: #124845; }
+    
+    .card-category {
+      background: linear-gradient(160deg, #18524f, #103b39);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-category:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.4), 0 0 15px rgba(59, 177, 170, 0.25);
+      border-color: rgba(59, 177, 170, 0.5);
+    }
+    .card-category:active { transform: scale(0.97); }
+    
+    .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .card-hover:hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 8px 20px -5px rgba(0, 0, 0, 0.3), 0 0 15px rgba(59, 177, 170, 0.15);
+      border-color: rgba(59, 177, 170, 0.4);
+      background-color: #165652;
+    }
+    .card-hover:active { transform: scale(0.98); }
+    
+    @keyframes pulse-green {
+      0% { box-shadow: 0 0 0 0 rgba(59, 177, 170, 0.7); }
+      70% { box-shadow: 0 0 0 10px rgba(59, 177, 170, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(59, 177, 170, 0); }
+    }
+    .playing-pulse { animation: pulse-green 2s infinite; border-color: #3bb1aa !important; }
+
+    @keyframes zoomFadeIn {
+      0% { opacity: 0; transform: scale(0.6) translateY(20px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .splash-logo-anim { animation: zoomFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .tab-content { display: none; opacity: 0; transform: translateY(10px); transition: all 0.4s ease; }
+    .tab-content.active { display: block; opacity: 1; transform: translateY(0); }
+    .subtab-content { display: none; }
+    .subtab-content.active { display: block; }
+
+    input[type=range] {
+      accent-color: #3bb1aa;
+    }
+
+    /* Toast Styles */
+    #toast-container {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+    .toast {
+      background: rgba(18, 72, 69, 0.95);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 12px;
+      border: 1px border-[#3bb1aa]/30;
+      font-size: 12px;
+      font-weight: bold;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(8px);
+      animation: slideUpFade 0.3s ease forwards;
+      display: flex;
+      items-center: center;
+      gap: 8px;
+    }
+    @keyframes slideUpFade {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col select-none overflow-x-hidden">
+
+  <!-- مشغل الصوت البرمجي -->
+  <audio id="audio-player" class="hidden"></audio>
+
+  <!-- نافذة من هو الشيخ -->
+  <div id="sheikh-bio-modal" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 hidden backdrop-blur-sm">
+    <div class="card-dark w-full max-w-md rounded-2xl border border-[#3bb1aa]/40 p-5 shadow-2xl relative max-h-[85vh] flex flex-col">
+      <div class="flex items-center justify-between pb-3 border-b border-[#237571]/40 mb-4">
+        <h3 class="text-sm font-bold text-white">من هو الشيخ د. محمد الأمين إسماعيل</h3>
+        <button onclick="closeSheikhBio()" class="text-[#89d6d1] hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="overflow-y-auto space-y-3 text-xs text-[#b4ece8] leading-relaxed pl-1">
+        <p>• هو فضيلة الشيخ الداعية الدكتور <strong>محمد الأمين إسماعيل</strong>، أحد أبرز الدعاة والعلماء البارزين في السودان.</p>
+        <p>• يحمل درجات علمية رفيعة في الشريعة الإسلامية والعقيدة، وعُرف بدروسه ومحاضراته المنهجية التي تلقى قبولاً واسعاً.</p>
+        <p>• له إسهامات دعوية كبيرة داخل السودان وخارجه من خلال الخطب والمواعظ والبرامج التلفزيونية والإذاعية والدورات العلمية الموجهة لطلبة العلم وعامة المسلمين.</p>
+        <p>• يتميز بأسلوبه العلمي الرصين وحرصه على نشر التوحيد والسنة والمنهج الوسطي المستقيم.</p>
+      </div>
+      <div class="mt-5 pt-3 border-t border-[#237571]/40 text-center">
+        <button onclick="closeSheikhBio()" class="bg-[#3bb1aa] text-[#0f3d3b] text-xs font-bold px-5 py-2 rounded-xl">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1. شاشة الترحيب Splash Screen -->
+  <div id="splash-screen" class="fixed inset-0 bg-[#092726] z-50 flex flex-col items-center justify-center transition-opacity duration-500 p-6 text-center">
+    <div class="splash-logo-anim relative mb-6">
+      <div class="w-36 h-36 rounded-full border-4 border-[#237571] p-1 shadow-2xl bg-[#124845] overflow-hidden flex items-center justify-center">
+        <img src="sheikh.jpg" alt="الشيخ" class="w-full h-full object-cover rounded-full" onerror="this.src='https://via.placeholder.com/150/237571/ffffff?text=الشيخ';">
+      </div>
+      <div class="absolute inset-0 rounded-full border-2 border-[#3bb1aa]/40 animate-ping pointer-events-none"></div>
+    </div>
+    <h1 class="text-2xl font-bold text-white tracking-wide">الشيخ د. محمد الأمين إسماعيل</h1>
+  </div>
+
+  <!-- 2. الهيدر العلوي -->
+  <header class="p-4 sticky top-0 z-30 bg-[#0f3d3b]/95 backdrop-blur-md flex items-center justify-between border-b border-[#237571]/40 shadow-sm">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full border border-[#3bb1aa]/40 overflow-hidden bg-[#124845] flex-shrink-0">
+        <img src="sheikh.jpg" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/100/237571/ffffff?text=ش';">
+      </div>
+      <div>
+        <h1 class="font-bold text-sm text-white leading-tight">الشيخ د. محمد الأمين إسماعيل</h1>
+        <p id="page-title" class="text-[11px] text-[#89d6d1]">الرئيسية</p>
+      </div>
+    </div>
+    <button class="w-9 h-9 rounded-full bg-[#124845] border border-[#237571]/50 flex items-center justify-center text-[#89d6d1]">
+      <i class="fa-solid fa-bell text-xs"></i>
+    </button>
+  </header>
+
+  <!-- 3. محتوى الصفحة الرئيسي -->
+  <main class="flex-1 max-w-md w-full mx-auto p-4 pb-44">
+
+    <!-- TAB 1: الرئيسية -->
+    <section id="tab-home" class="tab-content active space-y-5">
+      <div class="card-bg p-5 rounded-2xl border border-[#3bb1aa]/40 shadow-lg text-center relative overflow-hidden">
+        <p class="text-xs text-[#b4ece8] mb-4 font-medium">استمع إلى أحدث المواعظ والبرامج والخطب العلمية</p>
+        <button onclick="switchTab('categories', 'الأقسام')" class="bg-[#3bb1aa] text-[#0f3d3b] text-xs font-bold px-4 py-2 rounded-xl shadow card-hover">
+          تصفح كل الأقسام
+        </button>
+      </div>
+
+      <div>
+        <h3 class="text-xs font-bold text-[#b4ece8] mb-3 px-1">مختارات من المحاضرات</h3>
+        <div class="space-y-2.5">
+          
+          <div class="card-dark card-hover p-3 rounded-xl border border-[#237571]/50 flex items-center justify-between shadow-sm">
+            <div class="flex items-center gap-3 cursor-pointer flex-1 min-w-0" onclick="playAudio('التشويقية لبرنامج ليتفقهوا', 'ليتفقهوا', 'https://archive.org/download/23-23-mp-3-160-k/التشويقية.mp3')">
+              
+              <div class="flex items-center gap-2 flex-shrink-0">
+                <button class="text-[#3bb1aa] hover:text-white text-xl">
+                  <i class="fa-regular fa-circle-play" id="icon-التشويقية لبرنامج ليتفقهوا"></i>
+                </button>
+                <button onclick="event.stopPropagation(); downloadLecture('التشويقية لبرنامج ليتفقهوا', 'ليتفقهوا', 'https://archive.org/download/23-23-mp-3-160-k/التشويقية.mp3')" class="text-[#89d6d1]/70 hover:text-white text-xs flex items-center justify-center px-2 h-7 rounded bg-[#0f3d3b]/50 border border-[#237571]/40">
+                  <span id="dl-btn-التشويقية لبرنامج ليتفقهوا"><i class="fa-solid fa-cloud-arrow-down text-sm"></i></span>
+                </button>
+              </div>
+
+              <div class="truncate mr-1">
+                <h5 class="text-xs font-bold text-white truncate">التشويقية لبرنامج ليتفقهوا</h5>
+                <p class="text-[10px] text-[#89d6d1]/70 truncate">برنامج ليتفقهوا</p>
+              </div>
+            </div>
+            
+            <div class="flex items-center text-[#89d6d1]/60 text-xs flex-shrink-0 mr-2">
+              <button onclick="toggleFavorite('التشويقية لبرنامج ليتفقهوا', 'ليتفقهوا', 'https://archive.org/download/23-23-mp-3-160-k/التشويقية.mp3', this)" class="hover:text-white text-base" id="fav-التشويقية لبرنامج ليتفقهوا"><i class="fa-regular fa-bookmark"></i></button>
+            </div>
+          </div>
+
+          <div class="card-dark card-hover p-3 rounded-xl border border-[#237571]/50 flex items-center justify-between shadow-sm">
+            <div class="flex items-center gap-3 cursor-pointer flex-1 min-w-0" onclick="playAudio('من أسباب التحصيل العلمي', 'ليتفقهوا', 'https://archive.org/download/23-23-mp-3-160-k/1-%20من%20أسباب%20التحصيل%20العلمي.mp3')">
+              
+              <div class="flex items-center gap-2 flex-shrink-0">
+                <button class="text-[#3bb1aa] hover:text-white text-xl">
+                  <i class="fa-regular fa-circle-play" id="icon-من أسباب التحصيل العلمي"></i>
+                </button>
+                <button onclick="event.stopPropagation(); downloadLecture('من أسباب التحصيل العلمي', 'ليتفقهوا', 'https://archive.org/download/23-23-mp-3-160-k/1-%20من%20أسباب%20التحصيل%20العلمي.mp3')" class="text-[#89d6d1]/70 hover:text-white text-xs flex items-center justify-center px-2 h-7 rounded bg-[#0f3d3b]/50 border border-[#237571]/40">
+                  <span id="dl-btn-من أسباب التحصيل العلمي"><i class="fa-solid fa-cloud-arrow-down text-sm"></i></span>
+                </button>
+              </div>
+
+              <div class="truncate mr-1">
+                <h5 class="text-xs font-bold text-white truncate">من أسباب التحصيل العلمي</h5>
+                <p class="text-[10px] text-[#89d6d1]/70 truncate">برنامج ليتفقهوا</p>
+              </div>
+            </div>
+
+            <div class="flex items-center text-[#89d6d1]/60 text-xs flex-shrink-0 mr-2">
+              <button onclick="toggleFavorite('من أسباب التحصيل العلمي', 'ليتفقهوا', 'https://archive.org/download/23-23-mp-3-160-k/1-%20من%20أسباب%20التحصيل%20العلمي.mp3', this)" class="hover:text-white text-base" id="fav-من أسباب التحصيل العلمي"><i class="fa-regular fa-bookmark"></i></button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: جميع المحاضرات -->
+    <section id="tab-all-lectures" class="tab-content space-y-3">
+      <div class="flex items-center justify-between mb-1">
+        <h3 class="text-xs font-bold text-[#b4ece8] px-1">جميع المحاضرات</h3>
+        <span id="lectures-count" class="text-[10px] bg-[#124845] text-[#89d6d1] px-2 py-0.5 rounded-full border border-[#237571]/50">0 محاضرة</span>
+      </div>
+
+      <div class="relative">
+        <input type="text" id="search-input" oninput="filterLectures()" placeholder="بحث في كافة المحاضرات..." class="w-full bg-[#124845] text-white text-xs rounded-xl py-2.5 px-3 pl-9 border border-[#237571]/50 focus:outline-none focus:border-[#3bb1aa]">
+        <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-[#89d6d1]/50 text-xs"></i>
+      </div>
+
+      <div id="all-lectures-container" class="space-y-2.5">
+        <div class="animate-pulse space-y-2">
+          <div class="h-12 bg-[#124845] rounded-xl border border-[#237571]/30"></div>
+          <div class="h-12 bg-[#124845] rounded-xl border border-[#237571]/30"></div>
+          <div class="h-12 bg-[#124845] rounded-xl border border-[#237571]/30"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: الأقسام العلمية -->
+    <section id="tab-categories" class="tab-content space-y-4">
+      <div id="categories-menu">
+        <h3 class="text-sm font-bold text-white mb-4 px-1">الأقسام العلمية</h3>
+        
+        <div class="grid grid-cols-2 gap-3.5">
+          <button onclick="fetchArchive('23-23-mp-3-160-k', 'برنامج ليتفقهوا')" class="card-category p-5 rounded-2xl border border-[#3bb1aa]/20 flex flex-col items-center justify-center text-center h-36 relative overflow-hidden shadow-md">
+            <h4 class="text-sm font-extrabold text-white leading-relaxed mb-2">برنامج ليتفقهوا</h4>
+            <span class="text-[11px] text-[#89d6d1]/80 font-medium">عرض المحاضرات</span>
+          </button>
+
+          <button onclick="fetchArchive('20260814_20260814_2109', 'مواعظ')" class="card-category p-5 rounded-2xl border border-[#3bb1aa]/20 flex flex-col items-center justify-center text-center h-36 relative overflow-hidden shadow-md">
+            <h4 class="text-sm font-extrabold text-white leading-relaxed mb-2">مواعظ</h4>
+            <span class="text-[11px] text-[#89d6d1]/80 font-medium">عرض المحاضرات</span>
+          </button>
+
+          <button onclick="fetchArchive('mp-3-160-k_20260814', 'خطب الجمعة')" class="card-category p-5 rounded-2xl border border-[#3bb1aa]/20 flex flex-col items-center justify-center text-center h-36 relative overflow-hidden shadow-md">
+            <h4 class="text-sm font-extrabold text-white leading-relaxed mb-2">خطب الجمعة</h4>
+            <span class="text-[11px] text-[#89d6d1]/80 font-medium">عرض المحاضرات</span>
+          </button>
+        </div>
+      </div>
+      
+      <div id="results-container" class="hidden space-y-2"></div>
+    </section>
+
+    <!-- TAB 4: التنزيلات والمفضلة -->
+    <section id="tab-downloads" class="tab-content space-y-4">
+      <div class="flex border-b border-[#237571]/40 text-center text-xs font-bold">
+        <button onclick="switchSubTab('downloads-list')" id="subnav-downloads" class="flex-1 py-2.5 border-b-2 border-[#3bb1aa] text-white flex items-center justify-center gap-2">
+          <i class="fa-solid fa-cloud-arrow-down"></i>التنزيلات
+        </button>
+        <button onclick="switchSubTab('favorites-list')" id="subnav-favorites" class="flex-1 py-2.5 text-[#89d6d1]/50 flex items-center justify-center gap-2">
+          <i class="fa-solid fa-bookmark"></i>المفضلة
+        </button>
+      </div>
+
+      <div id="subtab-downloads-list" class="subtab-content active py-4 space-y-2">
+        <div id="empty-downloads" class="py-12 text-center text-[#89d6d1]/70">
+          <div class="w-16 h-16 rounded-full bg-[#124845] flex items-center justify-center text-2xl mx-auto mb-3 text-[#3bb1aa]">
+            <i class="fa-solid fa-circle-info"></i>
+          </div>
+          <h4 class="text-sm font-bold text-white mb-1">لا توجد محاضرات</h4>
+          <p class="text-[11px]">قم بتنزيل المحاضرات من خلال الضغط على علامة التحميل</p>
+        </div>
+        <div id="downloads-container" class="space-y-2.5"></div>
+      </div>
+
+      <div id="subtab-favorites-list" class="subtab-content py-4 space-y-2">
+        <div id="empty-favorites" class="py-12 text-center text-[#89d6d1]/70">
+          <div class="w-16 h-16 rounded-full bg-[#124845] flex items-center justify-center text-2xl mx-auto mb-3 text-[#3bb1aa]">
+            <i class="fa-solid fa-bookmark"></i>
+          </div>
+          <h4 class="text-sm font-bold text-white mb-1">لا توجد مفضلة</h4>
+          <p class="text-[11px]">أضف المحاضرات إلى المفضلة للرجوع إليها لاحقاً</p>
+        </div>
+        <div id="favorites-container" class="space-y-2.5"></div>
+      </div>
+    </section>
+
+    <!-- TAB 5: الإعدادات -->
+    <section id="tab-settings" class="tab-content space-y-5">
+      <div class="text-center py-6">
+        <div class="w-48 h-48 rounded-full border-4 border-[#3bb1aa]/50 bg-[#124845] overflow-hidden mx-auto mb-4 shadow-2xl">
+          <img src="sheikh.jpg" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/150/237571/ffffff?text=ش';">
+        </div>
+      </div>
+
+      <div class="card-dark rounded-2xl border border-[#237571]/50 divide-y divide-[#237571]/30 text-xs shadow-lg">
+        <div onclick="openSheikhBio()" class="p-3.5 flex items-center justify-between text-slate-100 card-hover cursor-pointer">
+          <span>من هو الشيخ د. محمد الأمين إسماعيل</span>
+          <i class="fa-solid fa-circle-info text-[#3bb1aa]"></i>
+        </div>
+        <div class="p-3.5 flex items-center justify-between text-slate-100 card-hover cursor-pointer" onclick="clearCache()">
+          <span>محو ذاكرة التخزين المؤقت</span>
+          <i class="fa-solid fa-trash text-[#3bb1aa]"></i>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div class="card-dark p-4 rounded-2xl border border-[#237571]/50 text-center">
+          <p class="text-[10px] text-[#89d6d1] mb-1">المفضلة</p>
+          <h4 id="fav-count-stat" class="text-xl font-bold text-white">0</h4>
+        </div>
+        <div class="card-dark p-4 rounded-2xl border border-[#237571]/50 text-center">
+          <p class="text-[10px] text-[#89d6d1] mb-1">التنزيلات</p>
+          <h4 id="dl-count-stat" class="text-xl font-bold text-white">0</h4>
+        </div>
+      </div>
+
+      <div class="pt-6 text-center space-y-4">
+        <div class="space-y-1">
+          <p class="text-sm font-bold text-white tracking-wider">تطوير</p>
+          <h3 class="font-cairo text-2xl font-black text-white tracking-wide">علاء الدين خضر</h3>
+        </div>
+        
+        <div class="space-y-2">
+          <p class="text-[10px] font-bold text-[#89d6d1] uppercase tracking-[0.2em]">تواصل معي</p>
+          <div class="flex items-center justify-center gap-4">
+            <a href="https://wa.me/249117179675" target="_blank" class="w-10 h-10 rounded-full bg-[#25D366]/10 border border-[#25D366]/30 flex items-center justify-center text-[#25D366] hover:bg-[#25D366] hover:text-white transition-all duration-300 shadow-lg">
+              <i class="fa-brands fa-whatsapp text-xl"></i>
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=100065331340861" target="_blank" class="w-10 h-10 rounded-full bg-[#1877F2]/10 border border-[#1877F2]/30 flex items-center justify-center text-[#1877F2] hover:bg-[#1877F2] hover:text-white transition-all duration-300 shadow-lg">
+              <i class="fa-brands fa-facebook-f text-lg"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 4. مشغل الصوت المصغر السفلي -->
+  <div id="mini-player" onclick="openFullPlayer()" class="fixed bottom-[58px] left-0 right-0 bg-[#124845] border-t border-[#3bb1aa]/40 px-4 py-2 z-40 hidden shadow-xl cursor-pointer">
+    <div class="max-w-md mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3 overflow-hidden min-w-0">
+        <div class="w-9 h-9 rounded-full border border-[#3bb1aa]/50 overflow-hidden bg-[#0f3d3b] flex-shrink-0">
+          <img src="sheikh.jpg" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/100/237571/ffffff?text=ش';">
+        </div>
+        <div class="truncate min-w-0">
+          <h6 id="player-title" class="text-xs font-bold text-white truncate">اسم المحاضرة</h6>
+          <p id="player-series" class="text-[10px] text-[#89d6d1]/80 truncate">اسم السلسلة</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 flex-shrink-0 mr-2" onclick="event.stopPropagation()">
+        <button onclick="togglePlayPause()" class="w-8 h-8 rounded-full bg-[#237571] text-white flex items-center justify-center text-sm shadow">
+          <i id="player-play-btn" class="fa-solid fa-play"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. شاشة المشغل الكاملة -->
+  <div id="full-player" class="fixed inset-0 bg-[#0f3d3b] z-50 flex flex-col justify-between p-6 transition-transform duration-300 translate-y-full">
+    
+    <div class="flex items-center justify-between text-[#89d6d1]">
+      <button onclick="closeFullPlayer()" class="text-xl p-2 hover:text-white">
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+      <button class="text-xl p-2 hover:text-white">
+        <i class="fa-solid fa-bars-staggered"></i>
+      </button>
+    </div>
+
+    <div class="flex flex-col items-center justify-center text-center my-auto space-y-6">
+      
+      <div class="relative w-64 h-64 flex items-center justify-center">
+        <div class="absolute inset-0 rounded-full border-2 border-[#3bb1aa]/30"></div>
+        <div class="absolute -top-1 w-3 h-1.5 bg-[#3bb1aa] rounded-full shadow"></div>
+        <div class="w-56 h-56 rounded-full overflow-hidden bg-[#124845] p-2 flex items-center justify-center border border-[#3bb1aa]/40 shadow-2xl">
+          <img src="sheikh.jpg" class="w-full h-full object-cover rounded-full filter contrast-110" onerror="this.src='https://via.placeholder.com/200/124845/ffffff?text=الشيخ';">
+        </div>
+      </div>
+
+      <div class="text-slate-400 text-xs font-mono tracking-widest flex items-center gap-1">
+        <span id="full-duration">00:00</span>
+        <span>|</span>
+        <span id="full-current-time" class="text-slate-300">00:00</span>
+      </div>
+
+      <div class="space-y-1">
+        <h2 id="full-player-title" class="text-xl font-bold text-white tracking-wide">البخل</h2>
+        <p id="full-player-series" class="text-xs text-slate-400">سلسلة الاشارات</p>
+      </div>
+
+      <div class="w-full max-w-xs pt-4">
+        <input type="range" id="seek-slider" min="0" max="100" value="0" oninput="seekAudio(this.value)" class="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer">
+      </div>
+
+    </div>
+
+    <div class="space-y-8 mb-4">
+      <div class="flex items-center justify-center gap-8">
+        <button onclick="skipTime(-10)" class="text-slate-400 hover:text-white text-2xl">
+          <i class="fa-solid fa-backward-step"></i>
+        </button>
+        
+        <button onclick="togglePlayPause()" class="w-16 h-16 rounded-full bg-white text-[#121829] flex items-center justify-center text-2xl shadow-xl hover:scale-105 transition-transform">
+          <i id="full-play-btn" class="fa-solid fa-play"></i>
+        </button>
+
+        <button onclick="skipTime(10)" class="text-slate-400 hover:text-white text-2xl">
+          <i class="fa-solid fa-forward-step"></i>
+        </button>
+      </div>
+
+      <div class="flex items-center justify-between text-slate-400 text-xs px-4 max-w-xs mx-auto">
+        <button class="hover:text-white"><i class="fa-regular fa-clock text-base"></i></button>
+        <button onclick="changeSpeed()" id="speed-btn" class="hover:text-white font-bold">1.0x</button>
+        <button class="hover:text-white"><i class="fa-solid fa-repeat text-base"></i></button>
+        <button class="hover:text-white"><i class="fa-solid fa-shuffle text-base"></i></button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 6. شريط التنقل السفلي -->
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <nav class="fixed bottom-0 left-0 right-0 bg-[#092726]/95 backdrop-blur-lg border-t border-[#237571]/40 py-2.5 z-50">
+    <div class="max-w-md mx-auto flex justify-around text-center text-xs">
+      <button onclick="switchTab('home', 'الرئيسية')" id="nav-home" class="nav-btn text-white flex flex-col items-center">
+        <i class="fa-solid fa-house text-lg"></i>
+      </button>
+      <button onclick="switchTab('all-lectures', 'جميع المحاضرات')" id="nav-all-lectures" class="nav-btn text-[#89d6d1]/50 flex flex-col items-center">
+        <i class="fa-solid fa-music text-lg"></i>
+      </button>
+      <button onclick="switchTab('categories', 'الأقسام')" id="nav-categories" class="nav-btn text-[#89d6d1]/50 flex flex-col items-center">
+        <i class="fa-solid fa-folder text-lg"></i>
+      </button>
+      <button onclick="switchTab('downloads', 'التنزيلات والمفضلة')" id="nav-downloads" class="nav-btn text-[#89d6d1]/50 flex flex-col items-center">
+        <i class="fa-solid fa-cloud-arrow-down text-lg"></i>
+      </button>
+      <button onclick="switchTab('settings', 'الإعدادات')" id="nav-settings" class="nav-btn text-[#89d6d1]/50 flex flex-col items-center">
+        <i class="fa-solid fa-gear text-lg"></i>
+      </button>
+    </div>
+  </nav>
+
+  <script>
+    const audio = document.getElementById('audio-player');
+    let currentPlayingTitle = null;
+    let favoritesList = [];
+    let downloadsList = [];
+    let allFetchedLectures = [];
+    let playbackSpeeds = [1.0, 1.25, 1.5, 2.0];
+    let speedIndex = 0;
+    let db;
+    let searchTimeout;
+
+    const ARCHIVE_SECTIONS = [
+      { id: '23-23-mp-3-160-k', title: 'برنامج ليتفقهوا' },
+      { id: '20260814_20260814_2109', title: 'مواعظ' },
+      { id: 'mp-3-160-k_20260814', title: 'خطب الجمعة' }
+    ];
+
+    function initDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open('AudioOfflineDB', 1);
+        request.onupgradeneeded = (e) => {
+          db = e.target.result;
+          if (!db.objectStoreNames.contains('audio_files')) {
+            db.createObjectStore('audio_files', { keyPath: 'title' });
+          }
+        };
+        request.onsuccess = (e) => {
+          db = e.target.result;
+          resolve(db);
+        };
+        request.onerror = (e) => reject(e);
+      });
+    }
+
+    window.addEventListener('load', async () => {
+      await initDB();
+      await loadOfflineDownloads();
+      loadFavoritesStorage();
+
+      setTimeout(() => {
+        const splash = document.getElementById('splash-screen');
+        splash.style.opacity = '0';
+        setTimeout(() => splash.style.display = 'none', 500);
+      }, 1200);
+
+      loadAllLecturesFast();
+    });
+
+    audio.ontimeupdate = () => {
+      if (audio.duration) {
+        const cur = formatTime(audio.currentTime);
+        const dur = formatTime(audio.duration);
+        document.getElementById('full-current-time').innerText = cur;
+        document.getElementById('full-duration').innerText = dur;
+        
+        const pct = (audio.currentTime / audio.duration) * 100;
+        document.getElementById('seek-slider').value = pct;
+      }
+    };
+
+    function formatTime(sec) {
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return `${m < 10 ? '0' : ''}${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+
+    function showToast(msg, icon = 'circle-info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `<i class="fa-solid fa-${icon} text-[#3bb1aa]"></i> <span>${msg}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-10px)';
+        toast.style.transition = 'all 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    function shareLecture(title, url) {
+      const shareText = `استمع إلى محاضرة: ${title}\nللفضيلة الشيخ د. محمد الأمين إسماعيل\n${url}`;
+      
+      if (navigator.share && /Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        navigator.share({
+          title: 'الشيخ د. محمد الأمين إسماعيل',
+          text: shareText,
+          url: url
+        }).catch(() => copyToClipboard(url));
+      } else {
+        copyToClipboard(url);
+      }
+    }
+
+    function copyToClipboard(text) {
+      const el = document.createElement('textarea');
+      el.value = text;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      showToast('تم نسخ الرابط للحافظة', 'clipboard-check');
+    }
+
+
+
+    function openSheikhBio() {
+      document.getElementById('sheikh-bio-modal').classList.remove('hidden');
+    }
+
+    function closeSheikhBio() {
+      document.getElementById('sheikh-bio-modal').classList.add('hidden');
+    }
+
+    async function playAudio(title, series, audioUrl) {
+      const miniPlayer = document.getElementById('mini-player');
+
+      if (currentPlayingTitle === title && !audio.paused) {
+        audio.pause();
+        updatePlayIcons(false);
+        return;
+      }
+
+      if (currentPlayingTitle !== title) {
+        currentPlayingTitle = title;
+        
+        const offlineData = await getOfflineAudio(title);
+        if (offlineData) {
+          const blobUrl = URL.createObjectURL(offlineData.blob);
+          audio.src = blobUrl;
+        } else {
+          audio.src = audioUrl;
+        }
+      }
+
+      audio.play().catch(() => showToast('تأكد من الاتصال بالإنترنت لتشغيل الصوت أول مرة.', 'triangle-exclamation'));
+
+      document.getElementById('player-title').innerText = title;
+      document.getElementById('player-series').innerText = series;
+      document.getElementById('full-player-title').innerText = title;
+      document.getElementById('full-player-series').innerText = series;
+
+      miniPlayer.classList.remove('hidden');
+      updatePlayIcons(true);
+      openFullPlayer();
+    }
+
+    function togglePlayPause() {
+      if (audio.paused) {
+        audio.play();
+        updatePlayIcons(true);
+      } else {
+        audio.pause();
+        updatePlayIcons(false);
+      }
+    }
+
+    function updatePlayIcons(isPlaying) {
+      const miniBtn = document.getElementById('player-play-btn');
+      const fullBtn = document.getElementById('full-play-btn');
+      
+      document.querySelectorAll('.card-dark').forEach(card => card.classList.remove('playing-pulse'));
+
+      if (isPlaying) {
+        if(miniBtn) miniBtn.className = 'fa-solid fa-pause';
+        if(fullBtn) fullBtn.className = 'fa-solid fa-pause';
+        
+        const allIcons = document.querySelectorAll(`[id="icon-${currentPlayingTitle}"]`);
+        allIcons.forEach(icon => {
+          icon.className = 'fa-regular fa-circle-pause';
+          const card = icon.closest('.card-dark');
+          if(card) card.classList.add('playing-pulse');
+        });
+      } else {
+        if(miniBtn) miniBtn.className = 'fa-solid fa-play';
+        if(fullBtn) fullBtn.className = 'fa-solid fa-play';
+        const allIcons = document.querySelectorAll(`[id="icon-${currentPlayingTitle}"]`);
+        allIcons.forEach(icon => icon.className = 'fa-regular fa-circle-play');
+      }
+    }
+
+    function openFullPlayer() {
+      document.getElementById('full-player').classList.remove('translate-y-full');
+    }
+
+    function closeFullPlayer() {
+      document.getElementById('full-player').classList.add('translate-y-full');
+    }
+
+    function seekAudio(val) {
+      if (audio.duration) {
+        audio.currentTime = (val / 100) * audio.duration;
+      }
+    }
+
+    function skipTime(sec) {
+      audio.currentTime = Math.min(Math.max(audio.currentTime + sec, 0), audio.duration || 0);
+    }
+
+    function changeSpeed() {
+      speedIndex = (speedIndex + 1) % playbackSpeeds.length;
+      const speed = playbackSpeeds[speedIndex];
+      audio.playbackRate = speed;
+      document.getElementById('speed-btn').innerText = `${speed.toFixed(1)}x`;
+    }
+
+    async function loadAllLecturesFast() {
+      const container = document.getElementById('all-lectures-container');
+      const countTag = document.getElementById('lectures-count');
+
+      const cachedData = localStorage.getItem('lectures_cache');
+      if (cachedData) {
+        allFetchedLectures = JSON.parse(cachedData);
+        countTag.innerText = `${allFetchedLectures.length} محاضرة`;
+        renderLecturesList(allFetchedLectures);
+        return;
+      }
+
+      try {
+        allFetchedLectures = [];
+        for (const sec of ARCHIVE_SECTIONS) {
+          const res = await fetch(`https://archive.org/metadata/${sec.id}`);
+          const data = await res.json();
+          const files = data.files.filter(f => f.name.endsWith('.mp3')).map(f => ({
+            name: f.name.replace('.mp3', ''),
+            url: `https://archive.org/download/${sec.id}/${f.name}`,
+            section: sec.title
+          }));
+          allFetchedLectures = allFetchedLectures.concat(files);
+        }
+
+        localStorage.setItem('lectures_cache', JSON.stringify(allFetchedLectures));
+        countTag.innerText = `${allFetchedLectures.length} محاضرة`;
+        renderLecturesList(allFetchedLectures);
+
+      } catch(err) {
+        container.innerHTML = '<p class="text-red-400 text-center py-6 text-xs">خطأ في التوصيل بالأرشيف.</p>';
+      }
+    }
+
+    function clearCache() {
+      localStorage.removeItem('lectures_cache');
+      showToast('تم مسح الذاكرة المؤقتة، جاري التحديث...', 'trash');
+      setTimeout(() => location.reload(), 1000);
+    }
+
+    function renderLecturesList(list) {
+      const container = document.getElementById('all-lectures-container');
+      if (list.length === 0) {
+        container.innerHTML = '<p class="text-center text-[#89d6d1]/60 py-8 text-xs">لا توجد نتائج تطابق بحثك.</p>';
+        return;
+      }
+
+      container.innerHTML = list.map(item => {
+        const isDownloaded = downloadsList.some(d => d.title === item.name);
+        const isFav = favoritesList.some(f => f.title === item.name);
+        const safeId = btoa(unescape(encodeURIComponent(item.name))).replace(/=/g, '');
+        return `
+        <div class="card-dark card-hover p-3 rounded-xl border border-[#237571]/50 flex items-center justify-between shadow-sm">
+          <div class="flex items-center gap-3 cursor-pointer flex-1 min-w-0" onclick="playAudio('${item.name}', '${item.section}', '${item.url}')">
+            
+            <div class="flex items-center gap-2 flex-shrink-0">
+              <button class="text-[#3bb1aa] text-lg">
+                <i class="fa-regular fa-circle-play" id="icon-${item.name}"></i>
+              </button>
+              <button onclick="event.stopPropagation(); downloadLecture('${item.name}', '${item.section}', '${item.url}', '${safeId}')" class="text-[#89d6d1]/70 hover:text-white text-xs flex items-center justify-center px-2 h-7 rounded bg-[#0f3d3b]/50 border border-[#237571]/40">
+                <span id="dl-btn-${safeId}">
+                  ${isDownloaded ? '<i class="fa-solid fa-circle-check text-[#3bb1aa] text-sm"></i>' : '<i class="fa-solid fa-cloud-arrow-down text-sm"></i>'}
+                </span>
+              </button>
+            </div>
+
+            <div class="truncate mr-1">
+              <h5 class="text-xs font-bold text-white truncate">${item.name}</h5>
+              <p class="text-[10px] text-[#89d6d1]/70 truncate">${item.section}</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3 text-[#89d6d1]/60 text-xs flex-shrink-0 mr-2">
+            <button onclick="event.stopPropagation(); shareLecture('${item.name}', '${item.url}')" class="hover:text-white text-base"><i class="fa-solid fa-share-nodes"></i></button>
+            <button onclick="toggleFavorite('${item.name}', '${item.section}', '${item.url}')" class="hover:text-white text-base" id="fav-${item.name}">
+              <i class="${isFav ? 'fa-solid fa-bookmark text-[#3bb1aa]' : 'fa-regular fa-bookmark'}"></i>
+            </button>
+          </div>
+        </div>
+      `}).join('');
+    }
+
+    function filterLectures() {
+      clearTimeout(searchTimeout);
+      searchTimeout = setTimeout(() => {
+        const q = document.getElementById('search-input').value.toLowerCase().trim();
+        const filtered = allFetchedLectures.filter(item => 
+          item.name.toLowerCase().includes(q) || item.section.toLowerCase().includes(q)
+        );
+        renderLecturesList(filtered);
+      }, 300);
+    }
+
+    async function fetchArchive(id, title) {
+      const menu = document.getElementById('categories-menu');
+      const container = document.getElementById('results-container');
+      
+      menu.classList.add('hidden');
+      container.classList.remove('hidden');
+      container.innerHTML = `
+        <div class="animate-pulse space-y-2 py-4">
+          <div class="h-10 bg-[#124845] rounded-xl"></div>
+          <div class="h-10 bg-[#124845] rounded-xl"></div>
+          <div class="h-10 bg-[#124845] rounded-xl"></div>
+        </div>
+      `;
+      
+      try {
+          const res = await fetch(`https://archive.org/metadata/${id}`);
+          const data = await res.json();
+          let files = data.files.filter(f => f.name.endsWith('.mp3'));
+
+          container.innerHTML = `
+              <button onclick="document.getElementById('categories-menu').classList.remove('hidden'); document.getElementById('results-container').classList.add('hidden')" class="mb-3 text-[#3bb1aa] text-xs font-bold flex items-center gap-2">
+                  <i class="fa-solid fa-arrow-right"></i> عودة للأقسام
+              </button>
+              <h3 class="text-white font-bold mb-3 text-sm">${title}</h3>
+              <div class="space-y-2">
+              ${files.map(f => {
+	                  const cleanName = f.name.replace('.mp3', '');
+	                  const url = `https://archive.org/download/${id}/${f.name}`;
+	                  const isDownloaded = downloadsList.some(d => d.title === cleanName);
+	                  const isFav = favoritesList.some(fav => fav.title === cleanName);
+	                  const safeId = btoa(unescape(encodeURIComponent(cleanName))).replace(/=/g, '');
+	                  return `
+	                  <div class="card-dark card-hover p-3 rounded-xl border border-[#237571]/50 flex justify-between items-center shadow-sm">
+	                      <div class="flex items-center gap-2 truncate min-w-0 flex-1 ml-2 cursor-pointer" onclick="playAudio('${cleanName}', '${title}', '${url}')">
+	                          <button class="text-[#3bb1aa] text-xl flex-shrink-0">
+	                              <i class="fa-regular fa-circle-play" id="icon-${cleanName}"></i>
+	                          </button>
+	                          <button onclick="event.stopPropagation(); downloadLecture('${cleanName}', '${title}', '${url}', '${safeId}')" class="text-[#89d6d1]/70 hover:text-white text-xs flex items-center justify-center px-2 h-7 rounded bg-[#0f3d3b]/50 border border-[#237571]/40 flex-shrink-0">
+	                              <span id="dl-btn-${safeId}">
+	                                ${isDownloaded ? '<i class="fa-solid fa-circle-check text-[#3bb1aa] text-sm"></i>' : '<i class="fa-solid fa-cloud-arrow-down text-sm"></i>'}
+	                              </span>
+	                          </button>
+	                          <span class="text-xs text-white truncate mr-1">${cleanName}</span>
+	                      </div>
+	                      <div class="flex items-center gap-3 mr-2">
+	                        <button onclick="event.stopPropagation(); shareLecture('${cleanName}', '${url}')" class="text-[#89d6d1]/60 hover:text-white text-base"><i class="fa-solid fa-share-nodes"></i></button>
+	                        <button onclick="toggleFavorite('${cleanName}', '${title}', '${url}')" class="text-base flex-shrink-0" id="fav-${cleanName}">
+	                          <i class="${isFav ? 'fa-solid fa-bookmark text-[#3bb1aa]' : 'fa-regular fa-bookmark text-[#89d6d1]/60'}"></i>
+	                        </button>
+	                      </div>
+	                  </div>
+	              `;
+	              }).join('')}
+              </div>
+          `;
+      } catch(err) {
+          container.innerHTML = `<p class="text-red-400 text-center py-6 text-xs">تعذر جلب المحاضرات.</p>`;
+      }
+    }
+
+    function switchTab(tabId, title) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('text-white');
+        btn.classList.add('text-[#89d6d1]/50');
+      });
+
+      document.getElementById(`tab-${tabId}`).classList.add('active');
+      document.getElementById(`nav-${tabId}`).classList.add('text-white');
+      document.getElementById(`nav-${tabId}`).classList.remove('text-[#89d6d1]/50');
+      document.getElementById('page-title').innerText = title;
+
+      if(tabId === 'downloads') {
+        renderDownloads();
+        renderFavorites();
+      }
+    }
+
+    function switchSubTab(subTabId) {
+      document.querySelectorAll('.subtab-content').forEach(tab => tab.classList.remove('active'));
+      document.getElementById('subnav-downloads').classList.remove('border-b-2', 'border-[#3bb1aa]', 'text-white');
+      document.getElementById('subnav-downloads').classList.add('text-[#89d6d1]/50');
+      document.getElementById('subnav-favorites').classList.remove('border-b-2', 'border-[#3bb1aa]', 'text-white');
+      document.getElementById('subnav-favorites').classList.add('text-[#89d6d1]/50');
+
+      if(subTabId === 'downloads-list') {
+        document.getElementById('subnav-downloads').classList.add('border-b-2', 'border-[#3bb1aa]', 'text-white');
+        document.getElementById('subnav-downloads').classList.remove('text-[#89d6d1]/50');
+      } else {
+        document.getElementById('subnav-favorites').classList.add('border-b-2', 'border-[#3bb1aa]', 'text-white');
+        document.getElementById('subnav-favorites').classList.remove('text-[#89d6d1]/50');
+      }
+
+      document.getElementById(`subtab-${subTabId}`).classList.add('active');
+    }
+
+    function loadFavoritesStorage() {
+      const saved = localStorage.getItem('favorites_list');
+      if (saved) {
+        favoritesList = JSON.parse(saved);
+      }
+    }
+
+    function toggleFavorite(title, series, src) {
+      const existsIndex = favoritesList.findIndex(item => item.title === title);
+
+      if (existsIndex > -1) {
+        favoritesList.splice(existsIndex, 1);
+      } else {
+        favoritesList.push({ title, series, src });
+      }
+
+      localStorage.setItem('favorites_list', JSON.stringify(favoritesList));
+      
+      const favBtns = document.querySelectorAll(`[id="fav-${title}"]`);
+      favBtns.forEach(btn => {
+        const icon = btn.querySelector('i');
+        if (existsIndex > -1) {
+          icon.className = 'fa-regular fa-bookmark text-[#89d6d1]/60';
+        } else {
+          icon.className = 'fa-solid fa-bookmark text-[#3bb1aa]';
+        }
+      });
+
+      renderFavorites();
+    }
+
+    function renderFavorites() {
+      const container = document.getElementById('favorites-container');
+      const emptyState = document.getElementById('empty-favorites');
+      
+      const stat = document.getElementById('fav-count-stat');
+      if(stat) stat.innerText = favoritesList.length;
+
+      if (favoritesList.length === 0) {
+        emptyState.classList.remove('hidden');
+        container.innerHTML = '';
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      container.innerHTML = favoritesList.map(item => `
+        <div class="card-dark p-3 rounded-xl border border-[#237571]/50 flex items-center justify-between shadow-sm">
+          <div class="flex items-center gap-3 cursor-pointer flex-1 min-w-0" onclick="playAudio('${item.title}', '${item.series}', '${item.src}')">
+            <button class="text-[#3bb1aa] text-xl flex-shrink-0"><i class="fa-regular fa-circle-play" id="icon-${item.title}"></i></button>
+            <div class="truncate">
+              <h5 class="text-xs font-bold text-white truncate">${item.title}</h5>
+              <p class="text-[10px] text-[#89d6d1]/70 truncate">${item.series}</p>
+            </div>
+          </div>
+          <button onclick="toggleFavorite('${item.title}', '${item.series}', '${item.src}')" class="text-red-400 hover:text-red-300 text-xs px-2">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    async function downloadLecture(title, series, src, safeId) {
+      const btnSpan = document.getElementById(`dl-btn-${safeId}`);
+
+      if (downloadsList.some(item => item.title === title)) {
+        showToast('المحاضرة محفوظة محلياً بالفعل', 'circle-check');
+        return;
+      }
+
+      let progress = 0;
+      const updateCircle = (p) => {
+        if (!btnSpan) return;
+        const circumference = 56.5; // 2 * PI * 9
+        const offset = circumference - (p / 100) * circumference;
+        btnSpan.innerHTML = `
+          <svg width="20" height="20" viewBox="0 0 24 24" class="transform -rotate-90">
+            <circle cx="12" cy="12" r="9" stroke="#237571" stroke-width="3" fill="transparent" opacity="0.3" />
+            <circle cx="12" cy="12" r="9" stroke="#3bb1aa" stroke-width="3" fill="transparent" 
+              stroke-dasharray="${circumference}" 
+              stroke-dashoffset="${offset}" 
+              stroke-linecap="round"
+              class="transition-all duration-200" />
+          </svg>
+        `;
+      };
+
+      updateCircle(0);
+      const interval = setInterval(() => {
+        progress += 5;
+        if (progress > 95) progress = 95;
+        updateCircle(progress);
+      }, 300);
+
+      try {
+        const response = await fetch(src);
+        if (!response.ok) throw new Error();
+        const blob = await response.blob();
+        clearInterval(interval);
+        updateCircle(100);
+
+        const transaction = db.transaction(['audio_files'], 'readwrite');
+        const store = transaction.objectStore('audio_files');
+        store.put({ title, series, blob });
+
+        downloadsList.push({ title, series, src });
+        
+        setTimeout(() => {
+          if (btnSpan) btnSpan.innerHTML = `<i class="fa-solid fa-circle-check text-[#3bb1aa] text-sm"></i>`;
+          showToast('تم اكتمال التنزيل بنجاح', 'circle-check');
+          renderDownloads();
+        }, 500);
+
+      } catch (err) {
+        clearInterval(interval);
+        if (btnSpan) btnSpan.innerHTML = `<i class="fa-solid fa-cloud-arrow-down text-sm"></i>`;
+        showToast('فشل التنزيل، تحقق من الاتصال', 'circle-xmark');
+      }
+    }
+
+    function updateDownloadIconState(title, isDownloaded) {
+      const btnSpan = document.getElementById(`dl-btn-${title}`);
+      if (btnSpan) {
+        if (isDownloaded) {
+          btnSpan.innerHTML = `<i class="fa-solid fa-circle-check text-[#3bb1aa] text-sm"></i>`;
+        } else {
+          btnSpan.innerHTML = `<i class="fa-solid fa-cloud-arrow-down text-sm"></i>`;
+        }
+      }
+    }
+
+    function getOfflineAudio(title) {
+      return new Promise((resolve) => {
+        if (!db) return resolve(null);
+        const transaction = db.transaction(['audio_files'], 'readonly');
+        const store = transaction.objectStore('audio_files');
+        const request = store.get(title);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => resolve(null);
+      });
+    }
+
+    function loadOfflineDownloads() {
+      return new Promise((resolve) => {
+        if (!db) return resolve();
+        const transaction = db.transaction(['audio_files'], 'readonly');
+        const store = transaction.objectStore('audio_files');
+        const request = store.getAll();
+        request.onsuccess = () => {
+          downloadsList = request.result.map(item => ({ title: item.title, series: item.series, src: '' }));
+          renderDownloads();
+
+          downloadsList.forEach(d => {
+            updateDownloadIconState(d.title, true);
+          });
+
+          resolve();
+        };
+        request.onerror = () => resolve();
+      });
+    }
+
+    async function deleteDownloadedLecture(title) {
+      const transaction = db.transaction(['audio_files'], 'readwrite');
+      const store = transaction.objectStore('audio_files');
+      store.delete(title);
+      
+      downloadsList = downloadsList.filter(d => d.title !== title);
+      renderDownloads();
+      
+      const safeId = btoa(unescape(encodeURIComponent(title))).replace(/=/g, '');
+      const btnSpans = document.querySelectorAll(`[id="dl-btn-${safeId}"]`);
+      btnSpans.forEach(span => {
+        span.innerHTML = `<i class="fa-solid fa-cloud-arrow-down text-sm"></i>`;
+      });
+      
+      showToast('تم حذف المحاضرة من التنزيلات', 'trash');
+    }
+
+    function renderDownloads() {
+      const container = document.getElementById('downloads-container');
+      const emptyState = document.getElementById('empty-downloads');
+      
+      const stat = document.getElementById('dl-count-stat');
+      if(stat) stat.innerText = downloadsList.length;
+
+      if (downloadsList.length === 0) {
+        emptyState.classList.remove('hidden');
+        container.innerHTML = '';
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      container.innerHTML = downloadsList.map(item => `
+        <div class="card-dark p-3 rounded-xl border border-[#237571]/50 flex items-center justify-between shadow-sm">
+          <div class="flex items-center gap-3 cursor-pointer flex-1 min-w-0" onclick="playAudio('${item.title}', '${item.series}', '${item.src}')">
+            <button class="text-[#3bb1aa] text-xl flex-shrink-0"><i class="fa-regular fa-circle-play" id="icon-${item.title}"></i></button>
+            <div class="truncate">
+              <h5 class="text-xs font-bold text-white truncate">${item.title}</h5>
+              <p class="text-[10px] text-[#89d6d1]/70 truncate">${item.series}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-[9px] text-[#3bb1aa] border border-[#3bb1aa]/40 px-2 py-0.5 rounded-full flex-shrink-0">أوفلاين</span>
+            <button onclick="deleteDownloadedLecture('${item.title}')" class="text-red-400/70 hover:text-red-400 text-sm px-1">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+  </script>
+</body>
+</html>
