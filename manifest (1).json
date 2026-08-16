@@ -1,0 +1,13 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "محمد الأمين إسماعيل",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "الشيخ محمد الأمين",
+  "start_url": "/https://aladinkhader.github.io/sheikh-app/",
+  "theme_color": "#ffffff",
+  "id": "sheikh-app",
+  "description": "تطبيق يضم محاضرات ودروس الشيخ محمد الأمين إسماعيل"
+}
